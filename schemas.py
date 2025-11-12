@@ -13,36 +13,29 @@ Model name is converted to lowercase for the collection name:
 
 from pydantic import BaseModel, Field
 from typing import Optional
+from datetime import datetime
 
-# Example schemas (replace with your own):
+# PDAM App Schemas
 
-class User(BaseModel):
+class Customer(BaseModel):
     """
-    Users collection schema
-    Collection name: "user" (lowercase of class name)
+    Customers collection schema
+    Collection name: "customer"
     """
-    name: str = Field(..., description="Full name")
-    email: str = Field(..., description="Email address")
-    address: str = Field(..., description="Address")
-    age: Optional[int] = Field(None, ge=0, le=120, description="Age in years")
-    is_active: bool = Field(True, description="Whether user is active")
+    name: str = Field(..., description="Nama pelanggan")
+    address: str = Field(..., description="Alamat pelanggan")
+    meter_number: str = Field(..., description="Nomor meter air")
+    qrcode_value: str = Field(..., description="Nilai QR unik yang ditanam pada meter / kartu pelanggan")
+    phone: Optional[str] = Field(None, description="Nomor telepon pelanggan")
+    is_active: bool = Field(True, description="Status aktif pelanggan")
 
-class Product(BaseModel):
+class Reading(BaseModel):
     """
-    Products collection schema
-    Collection name: "product" (lowercase of class name)
+    Readings collection schema
+    Collection name: "reading"
     """
-    title: str = Field(..., description="Product title")
-    description: Optional[str] = Field(None, description="Product description")
-    price: float = Field(..., ge=0, description="Price in dollars")
-    category: str = Field(..., description="Product category")
-    in_stock: bool = Field(True, description="Whether product is in stock")
-
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+    customer_id: str = Field(..., description="ID pelanggan (string ObjectId)")
+    current_reading: float = Field(..., ge=0, description="Angka meter saat ini")
+    operator_name: Optional[str] = Field(None, description="Nama petugas pencatat")
+    notes: Optional[str] = Field(None, description="Catatan tambahan")
+    reading_date: Optional[datetime] = Field(default_factory=datetime.utcnow, description="Tanggal pencatatan")
